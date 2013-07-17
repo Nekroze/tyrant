@@ -17,8 +17,8 @@ allow a new commit if a unit test fails or to report on the previous commits
 unit test or build status for example.
 
 The vision is for Tyrant to be a replacement for using many of the various
-programs and commands that comes with working on a modern project. Once Tyrant
-is configured you can tell it to construct your documentation, perform unit
-tests, build a release version and upload it along with various other future
-features I have yet to even think of and of course completely custom
-commands/features that anyone else can think of.
+commands that comes with working on a modern project by wrapping them in a
+single location. Once Tyrant is configured you can tell it to construct your
+documentation, perform unit tests, build a release version and upload it along
+with various other future features I have yet to even think of and of course
+completely custom commands/features that anyone else can think of.
