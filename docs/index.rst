@@ -28,7 +28,8 @@ documentation, perform unit tests, build a release version and upload it along
 with various other future features I have yet to even think of and of course
 completely custom commands/features that anyone else can think of.
 
-Contents:
+Contents
+--------
 
 .. toctree::
    :maxdepth: 4
@@ -48,11 +49,3 @@ my blog.
 
 If you encounter any errors or problems with *Tyrant*, please let me know!
 Open an Issue at the GitHub http://github.com/Nekroze/tyrant main repository.
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
