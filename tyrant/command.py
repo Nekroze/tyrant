@@ -1,5 +1,5 @@
-from __future__ import print_function
 """Tyrant command interface."""
+from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 
@@ -14,7 +14,7 @@ class Command(object):
         self.description = description
         self.map = {"help": self.help}
 
-    def execute(args):
+    def execute(self, args):
         """Execute the given command."""
         self.map[args[0]](args[1:])
 

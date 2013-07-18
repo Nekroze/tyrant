@@ -8,4 +8,4 @@ PLUGINS = {}
 
 def register_plugin(plugin):
     """Register a plugin."""
-    PLUGINS.append(plugin.codename, plugin)
+    PLUGINS[plugin.codename] = plugin
