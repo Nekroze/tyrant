@@ -9,4 +9,4 @@ install:
 script: 
   - nosetests
   - flake8 tyrant
-  - pylint tyrant
+  - pylint --rcfile=.pylintrc tyrant
