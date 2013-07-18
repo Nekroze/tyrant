@@ -3,6 +3,7 @@ from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 
+
 def _notimplemented(command, feature):
     assert False, "{0} {1} is not yet implemented".format(command, feature)
 
