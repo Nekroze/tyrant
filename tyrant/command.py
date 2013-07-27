@@ -4,10 +4,6 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 
 
-def _notimplemented(command, feature):
-    assert False, "{0} {1} is not yet implemented".format(command, feature)
-
-
 class Command(object):
     def __init__(self, name, description):
         self.name = name
