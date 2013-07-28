@@ -3,11 +3,11 @@ To create a new command for **Tyrant** the ``Command`` class needs to be
 subclassed for your command and override the ``Command.execute`` method to
 provide your command execution.
 
-The ``Command.__init__`` initialization should be overriden to provide
-ArgumentParser args.
+The ``Command.__init__`` initialization should be overriden and provide
+``ArgumentParser`` args.
 
-The following is a re-implementation of the argparse example as a **Tyrant**
-command::
+The following is a reimplementation of the argparse docs example as a
+**Tyrant** command::
    class MyCommand(Command):
        def __init__(self):
            super(MyCommand, self).__init__("mycommand", "Do stuff")
@@ -40,7 +40,7 @@ class Command(ArgumentParser):
        Tyrant += MyCommand()
 
     Now the mycommand can be called as a subcommand of the tyrant command line
-    application like such ``tyrant mycommand 1 2 3 4 --sum``.
+    application like such: ``tyrant mycommand 1 2 3 4 --sum``.
     """
     def __init__(self, name, description):
         super(Command, self).__init__(description=description,
