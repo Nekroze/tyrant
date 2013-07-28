@@ -44,11 +44,9 @@ class Command(object):
         assert isinstance(command, Command)
         self.commands[command.name] = command
 
-    # pylint: disable=W0613
     def execute(self, args):
-        """Execute the given command."""
-        assert False, "{0} execution is not yet implemented.".format(self.name)
-    # pylint: enable=W0613
+        """Execute this command, by default just runs help."""
+        self.help(args)
 
     def help(self, args):
         """Display command usage help."""
