@@ -18,7 +18,7 @@ class Command(object):
     def __init__(self, name, description):
         self.name = name
         self.description = description
-        self.commands = {"help": self.help}
+        self.commands = {}
 
     def __getitem__(self, key):
         return self.commands[key]
@@ -46,7 +46,8 @@ class Command(object):
 
     def execute(self, args):
         """Execute this command, by default just runs help."""
-        self.help(args)
+        if '-h' in args or '--help' in args:
+            self.help()
 
     def help(self, args):
         """Display command usage help."""
@@ -54,4 +55,6 @@ class Command(object):
         print(self.description + '\n')
 
         for key in sorted(self.commands.keys()):
-            print("{0} - {1}".format(key, self.commands[key].description))
+            com = self.commands[key]
+            print("{0} - {1}".format(key, getattr(com, "description",
+                                                  com.__doc__)))

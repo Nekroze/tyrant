@@ -16,5 +16,4 @@ Tyrant = Command(
 
 def main():
     args = sys.argv
-    print(args)
     Tyrant(args[1:])
