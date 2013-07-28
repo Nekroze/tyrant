@@ -22,10 +22,10 @@ class Command(object):
     def execute(self, args):
         """Execute the given command."""
         if args:
-            if args[0][0] == '-':
-                pass
-            elif args[0] in self.commands:
+            if args[0] in self.commands:
                 self.commands[args[0]](args[1:])
+            else:
+                pass
 
     def help(self, args):
         """Display command usage help."""
