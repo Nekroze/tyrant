@@ -9,4 +9,3 @@ install:
 script: 
   - py.test ./
   - flake8 tyrant
-  - pylint --rcfile=.pylintrc tyrant
