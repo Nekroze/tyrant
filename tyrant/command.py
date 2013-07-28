@@ -17,7 +17,7 @@ class Command(ArgumentParser):
     description that describes this commands usage.
     """
     def __init__(self, name, description):
-        super(Command, self).__init__(prog=name, description=description)
+        super(Command, self).__init__(description=description)
         self.name = name
         self.description = description
         self.commands = {}
@@ -31,16 +31,20 @@ class Command(ArgumentParser):
     def __len__(self):
         return len(self.commands)
 
-    def __call__(self, args):
+    def __call__(self, args, command=None):
+        if command is None:
+            command = []
         if args and args[0] in self.commands:
-            return self.commands[args[0]](args[1:])
+            return self.commands[args[0]](args[1:], command + [self.name])
+        self.prog = ' '.join(command)
+        self.epilog = self.help()
         self.parse_args(args)
 
     def __delitem__(self, key):
         del self.commands[key]
 
     def __str__(self):
-        return "{0} - {1}".format(self.name, self.description)
+        return "{0}  {1}".format(self.name, self.description)
 
     def add_command(self, command):
         """
@@ -48,3 +52,10 @@ class Command(ArgumentParser):
         """
         assert isinstance(command, Command)
         self.commands[command.name] = command
+
+    def help(self):
+        """Return subcommand help string."""
+        output = ["Subcommands:"]
+        for key in sorted(self.commands.keys()):
+            output.append("  {0}".format(str(self.commands[key])))
+        return '\n'.join(output)

@@ -7,7 +7,7 @@ import sys
 
 
 Tyrant = Command(
-    "Tyrant",
+    "tyrant",
     """
     Tyrant A project manager that can handle automatic building, unit
     testing and repository management in a simple CLI.
@@ -15,5 +15,6 @@ Tyrant = Command(
 
 
 def main():
+    """Main entry point."""
     args = sys.argv
     Tyrant(args[1:])
