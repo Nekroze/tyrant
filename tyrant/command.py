@@ -8,16 +8,29 @@ class Command(object):
     def __init__(self, name, description):
         self.name = name
         self.description = description
-        self.map = {"help": self.help}
+        self.commands = {"help": self.help}
+
+    def __getitem__(self, key):
+        return self.commands[key]
+
+    def __setitem__(self, key, value):
+        self.commands[key] = value
+
+    def __len__(self):
+        return len(self.commands)
 
     def execute(self, args):
         """Execute the given command."""
-        self.map[args[0]](args[1:])
+        if args:
+            if args[0][0] == '-':
+                pass
+            elif args[0] in self.commands:
+                self.commands[args[0]](args[1:])
 
     def help(self, args):
         """Display command usage help."""
-        if len(args) and args[0] in self.map:
-            print("{0} - {1}".format(args[0], self.map[args[0]].__docs__))
+        if len(args) and args[0] in self.commands:
+            print("{0} - {1}".format(args[0], self.commands[args[0]].__docs__))
         else:
             for key in sorted(self.map.keys()):
-                print("{0} - {1}".format(key, self.map[key].__docs__))
+                print("{0} - {1}".format(key, self.commands[key].__docs__))
