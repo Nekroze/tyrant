@@ -24,6 +24,7 @@ from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 from argparse import ArgumentParser
+from argparse import RawDescriptionHelpFormatter as Formatter
 
 
 class Command(ArgumentParser):
@@ -42,7 +43,8 @@ class Command(ArgumentParser):
     application like such ``tyrant mycommand 1 2 3 4 --sum``.
     """
     def __init__(self, name, description):
-        super(Command, self).__init__(description=description)
+        super(Command, self).__init__(description=description,
+                                      formatter_class=Formatter)
         self.name = name
         self.description = description
         self.commands = {}
@@ -75,7 +77,7 @@ class Command(ArgumentParser):
         output = ["Subcommands:"]
         for key in sorted(self.commands.keys()):
             output.append("  {0}".format(str(self.commands[key])))
-        return '\n'.join(output)
+        return "\n".join(output)
 
     def __iadd__(self, command):
         assert isinstance(command, Command)
