@@ -62,7 +62,7 @@ class Command(ArgumentParser):
         if args and args[0] in self.commands:
             return self.commands[args[0]](args[1:], command + [self.name])
         self.prog = ' '.join(command)
-        self.epilog = self._help()
+        self.epilog = self.__help__()
         self.execute(self.parse_args(args))
 
     def __delitem__(self, key):
@@ -71,7 +71,7 @@ class Command(ArgumentParser):
     def __str__(self):
         return "{0}  {1}".format(self.name, self.description)
 
-    def _help(self):
+    def __help__(self):
         output = ["Subcommands:"]
         for key in sorted(self.commands.keys()):
             output.append("  {0}".format(str(self.commands[key])))
