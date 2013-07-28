@@ -2,6 +2,23 @@
 To create a new command for **Tyrant** the ``Command`` class needs to be
 subclassed for your command and override the ``Command.execute`` method to
 provide your command execution.
+
+The ``Command.__init__`` initialization should be overriden to provide
+ArgumentParser args.
+
+The following is a re-implementation of the argparse example as a **Tyrant**
+command::
+   class MyCommand(Command):
+       def __init__(self, name, description):
+           super(MyCommand, self).__init__(name, description)
+           self.add_argument('integers', metavar='N', type=int, nargs='+',
+                            help='an integer for the accumulator')
+           self.add_argument('--sum', dest='accumulate',
+                            action='store_const', const=sum, default=max,
+                            help='sum the integers (default: find the max)')
+
+       def execute(self, args):
+           print(args.accumulate(args.integers))
 """
 from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
@@ -38,13 +55,20 @@ class Command(ArgumentParser):
             return self.commands[args[0]](args[1:], command + [self.name])
         self.prog = ' '.join(command)
         self.epilog = self.help()
-        self.parse_args(args)
+        self.execute(self.parse_args(args))
 
     def __delitem__(self, key):
         del self.commands[key]
 
     def __str__(self):
         return "{0}  {1}".format(self.name, self.description)
+
+    def execute(self, args):
+        """
+        Override this to execute a command. The args argument is a Namespace
+        object that is delivered by ArgumentParser.parse_args method.
+        """
+        pass
 
     def add_command(self, command):
         """
