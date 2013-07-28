@@ -4,9 +4,9 @@ python:
   - "3.3"
 # command to install dependencies
 install: 
-  - "pip install nose flake8 pylint --use-mirrors"
+  - "pip install pytest flake8 pylint --use-mirrors"
 # command to run tests
 script: 
-  - nosetests
+  - py.test tyrant
   - flake8 tyrant
   - pylint --rcfile=.pylintrc tyrant
