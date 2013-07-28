@@ -6,9 +6,10 @@ provide your command execution.
 from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
+from argparse import ArgumentParser
 
 
-class Command(object):
+class Command(ArgumentParser):
     """
     A command eases implementation of a **Tyrant** command.
 
@@ -16,6 +17,7 @@ class Command(object):
     description that describes this commands usage.
     """
     def __init__(self, name, description):
+        super(Command, self).__init__(prog=name, description=description)
         self.name = name
         self.description = description
         self.commands = {}
@@ -32,7 +34,7 @@ class Command(object):
     def __call__(self, args):
         if args and args[0] in self.commands:
             return self.commands[args[0]](args[1:])
-        self.execute(args)
+        self.parse_args(args)
 
     def __delitem__(self, key):
         del self.commands[key]
@@ -46,16 +48,3 @@ class Command(object):
         """
         assert isinstance(command, Command)
         self.commands[command.name] = command
-
-    def execute(self, args):
-        """Execute this command, by default just runs help."""
-        if '-h' in args or '--help' in args:
-            self.help()
-
-    def help(self):
-        """Display command usage help."""
-        print(self.name, ':')
-        print(self.description + '\n')
-
-        for key in sorted(self.commands.keys()):
-            print(str(self.commands[key]))
