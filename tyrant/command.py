@@ -9,8 +9,8 @@ ArgumentParser args.
 The following is a re-implementation of the argparse example as a **Tyrant**
 command::
    class MyCommand(Command):
-       def __init__(self, name, description):
-           super(MyCommand, self).__init__(name, description)
+       def __init__(self):
+           super(MyCommand, self).__init__("mycommand", "Do stuff")
            self.add_argument('integers', metavar='N', type=int, nargs='+',
                             help='an integer for the accumulator')
            self.add_argument('--sum', dest='accumulate',
@@ -32,6 +32,14 @@ class Command(ArgumentParser):
 
     ``Command`` requires a command name to be used to call this command and a
     description that describes this commands usage.
+
+    In order to add a subcommand to any given command use ``+=`` on the parent
+    command. For example::
+       from tyrant.tyrant import Tyrant
+       Tyrant += MyCommand()
+
+    Now the mycommand can be called as a subcommand of the tyrant command line
+    application like such ``tyrant mycommand 1 2 3 4 --sum``.
     """
     def __init__(self, name, description):
         super(Command, self).__init__(description=description)
@@ -54,7 +62,7 @@ class Command(ArgumentParser):
         if args and args[0] in self.commands:
             return self.commands[args[0]](args[1:], command + [self.name])
         self.prog = ' '.join(command)
-        self.epilog = self.help()
+        self.epilog = self._help()
         self.execute(self.parse_args(args))
 
     def __delitem__(self, key):
@@ -63,23 +71,20 @@ class Command(ArgumentParser):
     def __str__(self):
         return "{0}  {1}".format(self.name, self.description)
 
+    def _help(self):
+        output = ["Subcommands:"]
+        for key in sorted(self.commands.keys()):
+            output.append("  {0}".format(str(self.commands[key])))
+        return '\n'.join(output)
+
+    def __iadd__(self, command):
+        assert isinstance(command, Command)
+        self.commands[command.name] = command
+        return self
+
     def execute(self, args):
         """
         Override this to execute a command. The args argument is a Namespace
         object that is delivered by ArgumentParser.parse_args method.
         """
         pass
-
-    def add_command(self, command):
-        """
-        Add a subcommand to this command. Must be an instance of ``Command``.
-        """
-        assert isinstance(command, Command)
-        self.commands[command.name] = command
-
-    def help(self):
-        """Return subcommand help string."""
-        output = ["Subcommands:"]
-        for key in sorted(self.commands.keys()):
-            output.append("  {0}".format(str(self.commands[key])))
-        return '\n'.join(output)
