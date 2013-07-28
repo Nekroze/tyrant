@@ -1,4 +1,9 @@
-"""The **Tyrant** command line interface."""
+"""
+The **Tyrant** command line interface and Command accessor.
+
+In order to add a command to tyrant import ``Tyrant`` from this module and add
+a command to it inplace.
+"""
 from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
