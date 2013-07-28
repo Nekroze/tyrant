@@ -31,8 +31,11 @@ class Command(object):
 
     def __call__(self, args):
         if args and args[0] in self.commands:
-                return self.commands[args[0]](args[1:])
+            return self.commands[args[0]](args[1:])
         self.execute(args)
+
+    def __delitem__(self, key):
+        del self.commands[key]
 
     def add_command(self, command):
         """
@@ -41,9 +44,11 @@ class Command(object):
         assert isinstance(command, Command)
         self.commands[command.name] = command
 
+    # pylint: disable=W0613
     def execute(self, args):
         """Execute the given command."""
         assert False, "{0} execution is not yet implemented.".format(self.name)
+    # pylint: enable=W0613
 
     def help(self, args):
         """Display command usage help."""
@@ -53,5 +58,5 @@ class Command(object):
             print(self.name, ':')
             print(self.description + '\n')
 
-            for key in sorted(self.map.keys()):
+            for key in sorted(self.commands.keys()):
                 print("{0} - {1}".format(key, self.commands[key].description))
