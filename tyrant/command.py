@@ -37,6 +37,9 @@ class Command(object):
     def __delitem__(self, key):
         del self.commands[key]
 
+    def __str__(self):
+        return "{0} - {1}".format(self.name, self.description)
+
     def add_command(self, command):
         """
         Add a subcommand to this command. Must be an instance of ``Command``.
@@ -49,12 +52,10 @@ class Command(object):
         if '-h' in args or '--help' in args:
             self.help()
 
-    def help(self, args):
+    def help(self):
         """Display command usage help."""
         print(self.name, ':')
         print(self.description + '\n')
 
         for key in sorted(self.commands.keys()):
-            com = self.commands[key]
-            print("{0} - {1}".format(key, getattr(com, "description",
-                                                  com.__doc__)))
+            print(str(self.commands[key]))
