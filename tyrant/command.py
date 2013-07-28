@@ -53,7 +53,8 @@ class Command(object):
     def help(self, args):
         """Display command usage help."""
         if args and args[0] in self.commands:
-            print("{0} - {1}".format(args[0], self.commands[args[0]].__docs__))
+            print("{0} - {1}".format(args[0],
+                                     self.commands[args[0]].description))
         else:
             print(self.name, ':')
             print(self.description + '\n')
