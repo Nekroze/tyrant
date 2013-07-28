@@ -7,6 +7,6 @@ install:
   - "pip install pytest flake8 pylint --use-mirrors"
 # command to run tests
 script: 
-  - py.test tyrant
+  - py.test ./
   - flake8 tyrant
   - pylint --rcfile=.pylintrc tyrant
