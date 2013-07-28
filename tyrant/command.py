@@ -29,8 +29,11 @@ class Command(object):
 
     def help(self, args):
         """Display command usage help."""
-        if len(args) and args[0] in self.commands:
+        if args and args[0] in self.commands:
             print("{0} - {1}".format(args[0], self.commands[args[0]].__docs__))
         else:
+            print(self.name, ':')
+            print(self.description + '\n')
+
             for key in sorted(self.map.keys()):
                 print("{0} - {1}".format(key, self.commands[key].__docs__))
