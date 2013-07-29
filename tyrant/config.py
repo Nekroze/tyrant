@@ -1,5 +1,15 @@
 """
 A configuration file accessor and editor interface.
+
+This module stores the ``Config`` and ``ConfigPath`` globals.
+
+``ConfigPath`` stores the path to the nearest backsearch found ``polis.yml``
+file or None if it is not found.
+
+``Config`` holds a ``ConfigAccessor`` object and will only load and save if
+``ConfigPath`` is set. This object loads from a config file if found and will
+provide a programatic representation of this config until the end of execution
+at which time it will be re-serialized and saved to disk.
 """
 from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
@@ -9,11 +19,16 @@ import yaml
 import os
 
 
-def backsearch(path, filename="polis.yml"):
+def backsearch(path=None, filename="polis.yml"):
     """
     Search from the given path backwards to find the first occurance of
     filename.
+
+    ``path`` will default to the current working directory.
     """
+    if path is None:
+        path = os.getcwd()
+
     def recurse(pathlist):
         """Recurse backwards one directory at a time and filecheck."""
         if not pathlist or pathlist[0] in ('/', '') or ':/' in pathlist[0]:
@@ -28,6 +43,9 @@ def backsearch(path, filename="polis.yml"):
     if not isinstance(path, (list, set, tuple)):
         path = os.path.split(path)
     return recurse(path)
+
+
+ConfigPath = backsearch()
 
 
 class ConfigAccessor(object):
@@ -46,26 +64,23 @@ class ConfigAccessor(object):
         """
         Reload the configuration file, any changes will be lost if used before
         saving.
+
+        This will do nothing unless the ConfigPath global has been set.
         """
-        filename = backsearch(os.getcwd())
-        if filename is None:
-            return None
+        if ConfigPath:
+            with open(ConfigPath) as configfile:
+                self.__dict__.update(yaml.safe_load(configfile))
 
-        with open(filename) as configfile:
-            self.__dict__.update = yaml.safe_load(configfile)
-
-    @atexit.register
     def save(self):
         """
         Save the configuration file to disk for later loading. This gets
         automatically run at the end of a **Tyrant** execution.
-        """
-        filename = backsearch(os.getcwd())
-        if filename is None:
-            return None
 
-        with open(filename, 'w') as configfile:
-            yaml.dump(self.__dict__, configfile)
+        This will do nothing unless the ConfigPath global has been set.
+        """
+        if ConfigPath:
+            with open(ConfigPath, 'w') as configfile:
+                yaml.dump(self.__dict__, configfile)
 
     def get_data(self, field, default=None):
         """
@@ -88,5 +103,27 @@ class ConfigAccessor(object):
                 return default
         return data
 
+    def set_data(self, field, key, value):
+        """
+        Set the given field to the specified key value pair.
+
+        The field argument can be a '.' delimited string of namespaces as such
+        or a list of namespaces. Each will be looked for, and if needed
+        entered, until the end of the list at which point it will either set
+        the value at the final field.
+
+        Any missing fields will be created automatically.
+        """
+        if not isinstance(field, (list, set, tuple)):
+            field = field.split('.')
+
+        data = self.__dict__
+        for slot in field:
+            if slot not in data:
+                data[slot] = {}
+            data = data[slot]
+        data[key] = value
+
 
 Config = ConfigAccessor()
+atexit.register(Config.save)
