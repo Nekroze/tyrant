@@ -50,3 +50,6 @@ def main():
     """Main entry point."""
     args = sys.argv
     Tyrant(args[1:])
+
+
+import Core
