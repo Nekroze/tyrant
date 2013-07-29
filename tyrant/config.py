@@ -63,11 +63,13 @@ class ConfigAccessor(object):
         Reload the configuration file, any changes will be lost if used before
         saving.
 
-        This will do nothing unless the ConfigPath global has been set.
+        This will do nothing unless the ConfigPath global has been set and the
+        file it points to exists. Even if the file exists ``Config`` will be
+        cleared.
         """
-        if ConfigPath:
+        self.__dict__.clear()
+        if ConfigPath and os.path.exists(ConfigPath):
             with open(ConfigPath) as configfile:
-                self.__dict__.clear()
                 self.__dict__.update(yaml.safe_load(configfile))
 
     def save(self):
@@ -75,7 +77,7 @@ class ConfigAccessor(object):
         Save the configuration file to disk for later loading. This gets
         automatically run at the end of a **Tyrant** execution.
 
-        This will do nothing unless the ConfigPath global has been set.
+        This will do nothing unless the ``ConfigPath`` global has been set.
         """
         if ConfigPath:
             with open(ConfigPath, 'w') as configfile:
@@ -126,3 +128,14 @@ class ConfigAccessor(object):
 
 Config = ConfigAccessor()
 atexit.register(Config.save)
+
+
+def set_config(path=None):
+    """
+    Set the config path and reload it.
+    """
+    if path is None:
+        path = os.getcwd()
+    global ConfigPath
+    ConfigPath = os.path.join(os.path.abspath(path), "polis.yml")
+    Config.reload()
