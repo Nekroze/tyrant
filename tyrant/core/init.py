@@ -15,7 +15,7 @@ class InitCommand(Command):
     def __init__(self):
         super(InitCommand, self).__init__("init", "Initialize a new project.")
         self.add_argument('-a', '--author', action='append_const', const=str,
-                          help="Name of the project authors.", nargs='*')
+                          help="Name of the project authors.")
         self.add_argument('-p', '--project', action='append_const', const=str,
                           help="Project name")
 
@@ -26,7 +26,7 @@ class InitCommand(Command):
 
         if not args.author:
             args.author = input("Author name(s):")
-            args.author = [auth.strip() for auth in args.author.split(',')]
+        args.author = [auth.strip() for auth in args.author.split(',')]
         Config.author = args.author
 
         if not args.project:

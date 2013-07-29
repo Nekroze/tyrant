@@ -34,7 +34,7 @@ def register_subcommand(path, command):
     assert isinstance(command, Command)
     if not isinstance(path, (list, set, tuple)):
         path = path.split()
-    if path[0] == 'tyrant':
+    if path and path[0] == 'tyrant':
         path = path[1:]
 
     current = Tyrant
