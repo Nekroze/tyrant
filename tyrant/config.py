@@ -28,20 +28,18 @@ def backsearch(path=None, filename="polis.yml"):
     """
     if path is None:
         path = os.getcwd()
+    os.path.abspath(path)
 
-    def recurse(pathlist):
+    def recurse(path):
         """Recurse backwards one directory at a time and filecheck."""
-        if not pathlist or pathlist[0] in ('/', '') or ':/' in pathlist[0]:
+        if not path or path in ('/', ''):
             return None
-        pathname = os.path.join(pathlist[0], filename)
-        if os.path.exists(pathname):
-            return pathname
+        
+        pathfile = os.path.join(path, filename)
+        if os.path.exists(pathfile):
+            return pathfile
         else:
-            return recurse(pathlist[:-1])
-
-    path = os.path.abspath(path)
-    if not isinstance(path, (list, set, tuple)):
-        path = os.path.split(path)
+            return recurse(os.path.split(path)[0])
     return recurse(path)
 
 
