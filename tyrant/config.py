@@ -89,4 +89,4 @@ class ConfigAccessor(object):
         return data
 
 
-CONFIG=ConfigAccessor()
+Config = ConfigAccessor()
