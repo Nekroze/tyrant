@@ -31,7 +31,7 @@ setup(
     url=PROJECTSITE,
     platforms=PLATFORMS,
     packages=[SOURCE],
-    install_requires=['six'],
+    install_requires=['six', 'pyyaml'],
     entry_points={
         'console_scripts': [
             'tyrant = tyrant.tyrant:main',

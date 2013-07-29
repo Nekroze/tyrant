@@ -4,7 +4,7 @@ python:
   - "3.3"
 # command to install dependencies
 install: 
-  - "pip install six pytest flake8 --use-mirrors"
+  - "pip install pyyaml six pytest flake8 --use-mirrors"
 # command to run tests
 script: 
   - py.test ./
