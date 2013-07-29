@@ -69,6 +69,7 @@ class ConfigAccessor(object):
         """
         if ConfigPath:
             with open(ConfigPath) as configfile:
+                self.__dict__.clear()
                 self.__dict__.update(yaml.safe_load(configfile))
 
     def save(self):
