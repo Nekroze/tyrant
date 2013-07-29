@@ -34,7 +34,7 @@ def backsearch(path=None, filename="polis.yml"):
         """Recurse backwards one directory at a time and filecheck."""
         if not path or path in ('/', ''):
             return None
-        
+
         pathfile = os.path.join(path, filename)
         if os.path.exists(pathfile):
             return pathfile
