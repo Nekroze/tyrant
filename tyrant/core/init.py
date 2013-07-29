@@ -5,7 +5,9 @@ __email__ = 'nekroze@eturnilnetwork.com'
 from tyrant.command import Command
 from tyrant.tyrant import register_subcommand
 from tyrant.config import Config, set_config
-from six.rename import input
+#pylint: disable=F0401
+from six.moves import input
+#pylint: enable=F0401
 
 
 class InitCommand(Command):

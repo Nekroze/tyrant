@@ -52,4 +52,4 @@ def main():
     Tyrant(args[1:])
 
 
-import Core
+from . import core
