@@ -81,7 +81,7 @@ class ConfigAccessor(object):
         """
         if ConfigPath:
             with open(ConfigPath, 'w') as configfile:
-                yaml.dump(self.__dict__, configfile)
+                yaml.dump(self.__dict__, configfile, default_flow_style=False)
 
     def get_data(self, field, default=None):
         """
