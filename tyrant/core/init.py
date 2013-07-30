@@ -13,7 +13,7 @@ from six.moves import input
 class InitCommand(Command):
     """Initialize a **Tyrant** project."""
     def __init__(self):
-        super(InitCommand, self).__init__("init", "Initialize a new project.")
+        super(InitCommand, self).__init__("init", "Initialize tyrant control.")
         self.add_argument('-a', '--author', action='append_const', const=str,
                           help="Name of the project authors.")
         self.add_argument('-p', '--project', action='append_const', const=str,
