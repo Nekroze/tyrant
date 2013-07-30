@@ -5,6 +5,7 @@ __email__ = 'nekroze@eturnilnetwork.com'
 from tyrant.command import Command
 from tyrant.tyrant import register_subcommand
 from tyrant.config import Config, set_config
+import os
 #pylint: disable=F0401
 from six.moves import input
 #pylint: enable=F0401
@@ -21,6 +22,9 @@ class InitCommand(Command):
 
     def execute(self, args):
         """Create a new config file from gathered information."""
+        if os.path.exists(os.path.join(os.getcwd(), "polis.yml")):
+            return None
+        
         print("Creating a new polis.yml config file.")
         set_config()
 
