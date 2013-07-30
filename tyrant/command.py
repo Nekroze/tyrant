@@ -10,7 +10,7 @@ The following is a reimplementation of the argparse docs example as a
 **Tyrant** command::
    class MyCommand(Command):
        def __init__(self):
-           super(MyCommand, self).__init__("mycommand", "Do stuff")
+           super(MyCommand, self).__init__("mycommand", "Do stuff", "tyrant")
            self.add_argument('integers', metavar='N', type=int, nargs='+',
                             help='an integer for the accumulator')
            self.add_argument('--sum', dest='accumulate',
@@ -34,6 +34,13 @@ class Command(ArgumentParser):
     ``Command`` requires a command name to be used to call this command and a
     description that describes this commands usage.
 
+    The final argument to construct a ``Command`` is used in printing its usage
+    help output to properly show the command path. If your command is under the
+    root tyrant command line then path should be ``'tyrant'`` but for example
+    if your command will be registered under ``tyrant docs`` path should be
+    ``'tyrant docs'``. Getting this incorrect will not break anything, just
+    make the command line help minorly incorrect.
+
     In order to add a subcommand to any given command use ``+=`` on the parent
     command. For example::
        from tyrant.tyrant import Tyrant
@@ -42,7 +49,7 @@ class Command(ArgumentParser):
     Now the mycommand can be called as a subcommand of the tyrant command line
     application like such: ``tyrant mycommand 1 2 3 4 --sum``.
     """
-    def __init__(self, name, description, path=None):
+    def __init__(self, name, description, path):
         if path:
             path += ' ' + name
         super(Command, self).__init__(description=description,
