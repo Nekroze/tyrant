@@ -20,5 +20,8 @@ def blank_command(path, description):
 
 
 blank_command("project", "Project management.")
+blank_command("project init", "Project initialization.")
 blank_command("docs", "Documentation management.")
+blank_command("docs init", "Documentation initialization.")
 blank_command("test", "Unittest management.")
+blank_command("test init", "Unittest initialization.")
