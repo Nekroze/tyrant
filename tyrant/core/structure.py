@@ -5,7 +5,6 @@ __email__ = 'nekroze@eturnilnetwork.com'
 from tyrant.command import Command
 from tyrant.tyrant import register_subcommand
 from tyrant.config import Config, set_config
-from six.moves import input
 
 
 def blank_command(path, description):

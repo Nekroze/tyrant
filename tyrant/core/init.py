@@ -6,9 +6,6 @@ from tyrant.command import Command
 from tyrant.tyrant import register_subcommand
 from tyrant.config import Config, set_config
 import os
-#pylint: disable=F0401
-from six.moves import input
-#pylint: enable=F0401
 
 
 class InitCommand(Command):
@@ -25,18 +22,20 @@ class InitCommand(Command):
         """Create a new config file from gathered information."""
         if os.path.exists(os.path.join(os.getcwd(), "polis.yml")):
             return None
-        
+
         print("Creating a new polis.yml config file.")
         set_config()
 
         if not args.author:
-            args.author = input("Author name(s):")
-        args.author = [auth.strip() for auth in args.author.split(',')]
-        Config.author = args.author
+            Config.ask_for('author', "Author name(s)")
+            Config.author = [auth.strip() for auth in Config.author.split(',')]
+        else:
+            Config.author = args.author
 
         if not args.project:
-            args.project = input("Project name:")
-        Config.project = args.project
+            Config.ask_for('project', "Project name")
+        else:
+            Config.project = args.project
 
         print("Tyrant project initialized.")
 

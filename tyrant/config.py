@@ -17,6 +17,9 @@ __email__ = 'nekroze@eturnilnetwork.com'
 import atexit
 import yaml
 import os
+#pylint: disable=F0401
+from six.moves import input
+#pylint: enable=F0401
 
 
 def backsearch(path=None, filename="polis.yml"):
@@ -57,6 +60,23 @@ class ConfigAccessor(object):
     """
     def __init__(self):
         self.reload()
+
+    def ask_for(self, key, message):
+        """
+        Return key if it exists and return it otherwise ask the user for input
+        with the given message.
+
+        The ``key`` argument is used to get and if required set the data from
+        the ``get_data`` and ``set_data`` methods respectively.
+
+        ``message`` will be printed before asking for input on the next line.
+        """
+        output = self.get_data(key)
+        if output is not None:
+            return output
+        else:
+            output = input(message + "\n|>")
+            return self.set_data(key, output)
 
     def reload(self):
         """
@@ -124,6 +144,7 @@ class ConfigAccessor(object):
                 data[slot] = {}
             data = data[slot]
         data[key] = value
+        return value
 
 
 Config = ConfigAccessor()
