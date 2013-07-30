@@ -4,7 +4,6 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 from tyrant.command import Command
 from tyrant.tyrant import register_subcommand
-from tyrant.config import Config, set_config
 
 
 def blank_command(path, description):
