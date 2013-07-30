@@ -3,7 +3,7 @@ from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 from tyrant.command import Command
-from tyrant.tyrant import register_subcommand
+from tyrant.tyrant import register_subcommand, Tyrant
 from tyrant.config import Config, ConfigPath
 import os
 
