@@ -42,9 +42,11 @@ class Command(ArgumentParser):
     Now the mycommand can be called as a subcommand of the tyrant command line
     application like such: ``tyrant mycommand 1 2 3 4 --sum``.
     """
-    def __init__(self, name, description):
+    def __init__(self, name, description, path=None):
+        if path:
+            path += ' ' + name
         super(Command, self).__init__(description=description,
-                                      formatter_class=Formatter)
+                                      formatter_class=Formatter, prog=path)
         self.name = name
         self.description = description
         self.commands = {}
@@ -58,12 +60,9 @@ class Command(ArgumentParser):
     def __len__(self):
         return len(self.commands)
 
-    def __call__(self, args, command=None):
-        if command is None:
-            command = []
+    def __call__(self, args):
         if args and args[0] in self.commands:
-            return self.commands[args[0]](args[1:], command + [self.name])
-        self.prog = ' '.join(command)
+            return self.commands[args[0]](args[1:])
         self.epilog = self.__help__()
         self.execute(self.parse_args(args))
 

@@ -16,7 +16,10 @@ def blank_command(path, description):
     """
     if not isinstance(path, (list, set, tuple)):
         path = path.split()
-    register_subcommand(path[:-1], Command(path[-1], description))
+    if path and path[0] != 'tyrant':
+        path.insert(0, 'tyrant')
+    register_subcommand(path[:-1], Command(path[-1], description,
+                                           ' '.join(path[:-1])))
 
 
 blank_command("project", "Project management.")
