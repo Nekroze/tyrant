@@ -53,7 +53,7 @@ setup(
 )"""
 
 
-class InitCommand(Command):
+class PythonInitCommand(Command):
     """Initialize a **Python** project."""
     def execute(self, args):
         """Create a new python setup.py."""
@@ -67,5 +67,5 @@ class InitCommand(Command):
         print("Python setup.py created")
 
 register_subcommand('tyrant project init',
-                    PythonCommand("python", "Initialize a python project.",
+                    PythonInitCommand("python", "Initialize a python project.",
                                   "tyrant project init"))
