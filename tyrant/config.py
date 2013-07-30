@@ -46,7 +46,8 @@ def backsearch(path=None, filename="polis.yml"):
     return recurse(path)
 
 
-ConfigPath = backsearch()
+_ConfigPath = {'path': backsearch()}
+ConfigPath = lambda : _ConfigPath['path']
 
 
 class ConfigAccessor(object):
@@ -61,7 +62,7 @@ class ConfigAccessor(object):
     def __init__(self):
         self.reload()
 
-    def ask_for(self, key, message):
+    def ask_for(self, key, message, field=None):
         """
         Return key if it exists and return it otherwise ask the user for input
         with the given message.
@@ -76,7 +77,7 @@ class ConfigAccessor(object):
             return output
         else:
             output = input(message + "\n|>")
-            return self.set_data(key, output)
+            return self.set_data(key, output, field)
 
     def reload(self):
         """
@@ -88,8 +89,8 @@ class ConfigAccessor(object):
         cleared.
         """
         self.__dict__.clear()
-        if ConfigPath and os.path.exists(ConfigPath):
-            with open(ConfigPath) as configfile:
+        if ConfigPath() and os.path.exists(ConfigPath()):
+            with open(ConfigPath()) as configfile:
                 self.__dict__.update(yaml.safe_load(configfile))
 
     def save(self):
@@ -99,8 +100,8 @@ class ConfigAccessor(object):
 
         This will do nothing unless the ``ConfigPath`` global has been set.
         """
-        if ConfigPath:
-            with open(ConfigPath, 'w') as configfile:
+        if ConfigPath():
+            with open(ConfigPath(), 'w') as configfile:
                 yaml.dump(self.__dict__, configfile, default_flow_style=False)
 
     def get_data(self, field, default=None):
@@ -124,7 +125,7 @@ class ConfigAccessor(object):
                 return default
         return data
 
-    def set_data(self, field, key, value):
+    def set_data(self, key, value, field=None):
         """
         Set the given field to the specified key value pair.
 
@@ -135,7 +136,9 @@ class ConfigAccessor(object):
 
         Any missing fields will be created automatically.
         """
-        if not isinstance(field, (list, set, tuple)):
+        if field is None or field == '':
+            field = []
+        elif not isinstance(field, (list, set, tuple)):
             field = field.split('.')
 
         data = self.__dict__
@@ -157,6 +160,5 @@ def set_config(path=None):
     """
     if path is None:
         path = os.getcwd()
-    global ConfigPath
-    ConfigPath = os.path.join(os.path.abspath(path), "polis.yml")
+    _ConfigPath['path'] = os.path.join(os.path.abspath(path), "polis.yml")
     Config.reload()

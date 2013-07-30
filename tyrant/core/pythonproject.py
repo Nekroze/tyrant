@@ -11,7 +11,7 @@ SetupBase = """#!/usr/bin/env python
 import os
 import sys
 
-import {project_name}
+import {source}
 
 try:
     from setuptools import setup
@@ -24,16 +24,16 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name='{project_name}',
-    version={project_name}.__version__,
-    description='{project_description}',
+    version={source}.__version__,
+    description='{description}',
     long_description=open('README.rst').read()
     author='{author}',
     author_email='{email}',
-    url='{projecturl}',
+    url='{url}',
     packages=[
-        '{project_name}',
+        '{source}',
     ],
-    package_dir={'{project_name }': '{project_name}'},
+    package_dir={'{source}': '{source}'},
     include_package_data=True,
     install_requires=[
     ],
@@ -60,7 +60,8 @@ class PythonInitCommand(Command):
         Tyrant(['init'])
         print("Creating a python project setup.py")
 
-        setupname = os.path.join(os.path.dirname(ConfigPath), "setup.py")
+        setupdir = os.path.dirname(ConfigPath())
+        setupname = os.path.join(setupdir, "setup.py")
         with open(setupname, 'w') as setup:
             setup.write(SetupBase.format(**Config.__dict__))
 
