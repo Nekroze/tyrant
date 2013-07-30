@@ -89,4 +89,4 @@ class Command(ArgumentParser):
         Override this to execute a command. The args argument is a Namespace
         object that is delivered by ArgumentParser.parse_args method.
         """
-        pass
+        self.print_help()
