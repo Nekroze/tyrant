@@ -60,7 +60,9 @@ class InitCommand(Command):
             Config.authors = args.authors
         else:
             Config.ask_for('authors', "Author name(s)")
-            Config.authors = [auth.strip() for auth in Config.authors.split(',')]
+            Config.authors = [auth.strip() for auth in
+                              Config.authors.split(',')]
+
         Config.author = Config.authors[0]
 
         if args.email:

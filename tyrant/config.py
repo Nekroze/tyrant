@@ -47,7 +47,7 @@ def backsearch(path=None, filename="polis.yml"):
 
 
 _ConfigPath = {'path': backsearch()}
-ConfigPath = lambda : _ConfigPath['path']
+ConfigPath = lambda: _ConfigPath['path']
 
 
 class ConfigAccessor(object):

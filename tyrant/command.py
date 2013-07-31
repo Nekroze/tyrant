@@ -90,9 +90,11 @@ class Command(ArgumentParser):
         self.commands[command.name] = command
         return self
 
+#pylint: disable=W0613
     def execute(self, args):
         """
         Override this to execute a command. The args argument is a Namespace
         object that is delivered by ArgumentParser.parse_args method.
         """
         self.print_help()
+#pylint: disable=W0613

@@ -69,4 +69,4 @@ class PythonInitCommand(Command):
 
 register_subcommand('tyrant project init',
                     PythonInitCommand("python", "Initialize a python project.",
-                                  "tyrant project init"))
+                                      "tyrant project init"))
