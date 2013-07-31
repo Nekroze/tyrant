@@ -37,6 +37,7 @@ class InitCommand(Command):
         set_config()
 
         def ask_for(field, description, value=None):
+            """Ask for or use the given data."""
             if value:
                 Config.set_data(field, description)
             else:

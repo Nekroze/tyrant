@@ -25,6 +25,7 @@ from six.moves import input
 def flatten_dict(data):
     """Flatten a given dictionary."""
     def items():
+        """Pull the items from a dict."""
         for key, value in data.items():
             if isinstance(value, dict):
                 for subkey, subvalue in flatten_dict(value).items():
