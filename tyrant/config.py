@@ -82,7 +82,7 @@ class ConfigAccessor(object):
         """
         return flatten_dict(self.__dict__)
 
-    def ask_for(self, key, message, field=None):
+    def ask_for(self, key, message):
         """
         Return key if it exists and return it otherwise ask the user for input
         with the given message.
@@ -97,7 +97,7 @@ class ConfigAccessor(object):
             return output
         else:
             output = input(message + "\n|>")
-            return self.set_data(key, output, field)
+            return self.set_data(key, output)
 
     def reload(self):
         """
@@ -145,7 +145,7 @@ class ConfigAccessor(object):
                 return default
         return data
 
-    def set_data(self, key, value, field=None):
+    def set_data(self, field, value):
         """
         Set the given field to the specified key value pair.
 
@@ -156,17 +156,15 @@ class ConfigAccessor(object):
 
         Any missing fields will be created automatically.
         """
-        if field is None or field == '':
-            field = []
-        elif not isinstance(field, (list, set, tuple)):
+        if isinstance(field, str):
             field = field.split('.')
 
         data = self.__dict__
-        for slot in field:
+        for slot in field[:-1]:
             if slot not in data:
                 data[slot] = {}
             data = data[slot]
-        data[key] = value
+        data[field[-1]] = value
         return value
 
 

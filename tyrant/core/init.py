@@ -36,44 +36,26 @@ class InitCommand(Command):
         print("Creating a new polis.yml config file.")
         set_config()
 
-        if args.project:
-            Config.project_name = args.project
-        else:
-            Config.ask_for("project_name", "Project name")
+        def ask_for(field, description, value=None):
+            if value:
+                Config.set_data(field, description)
+            else:
+                Config.ask_for(field, description)
 
-        if args.description:
-            Config.description = args.description
-        else:
-            Config.ask_for("description", "Project description")
+        ask_for("project.name", "Project name", args.project)
+        ask_for("project.description", "Project description", args.description)
+        ask_for("project.url", "Project website", args.url)
+        ask_for("project.source", "Project source directory", args.source)
+        ask_for('developers.authors', "Author name(s)", args.authors)
+        ask_for("developers.email", "Contact email address", args.email)
+        ask_for("project.license", "Project license", args.license)
 
-        if args.url:
-            Config.url = args.url
-        else:
-            Config.ask_for("url", "Project website")
-
-        if args.source:
-            Config.source_dir = args.source
-        else:
-            Config.ask_for("source", "Project source directory")
-
-        if args.authors:
-            Config.authors = args.authors
-        else:
-            Config.ask_for('authors', "Author name(s)")
-            Config.authors = [auth.strip() for auth in
-                              Config.authors.split(',')]
-
-        Config.author = Config.authors[0]
-
-        if args.email:
-            Config.email = args.email
-        else:
-            Config.ask_for("email", "Contact email address")
-
-        if args.license:
-            Config.license = args.license
-        else:
-            Config.ask_for("license", "Project license")
+        authors = Config.get_data("developers.authors")
+        if isinstance(authors, str):
+            authors = [auth.strip() for auth in
+                       authors.split(',')]
+            Config.set_data("developers.authors", authors)
+        Config.set_data("developers.lead", authors[0])
 
         print("Tyrant project initialized.")
 
