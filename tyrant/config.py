@@ -22,6 +22,19 @@ from six.moves import input
 #pylint: enable=F0401
 
 
+def flatten_dict(data):
+    """Flatten a given dictionary."""
+    def items():
+        for key, value in data.items():
+            if isinstance(value, dict):
+                for subkey, subvalue in flatten_dict(value).items():
+                    yield key + "." + subkey, subvalue
+            else:
+                yield key, value
+
+    return dict(items())
+
+
 def backsearch(path=None, filename="polis.yml"):
     """
     Search from the given path backwards to find the first occurance of
@@ -61,6 +74,13 @@ class ConfigAccessor(object):
     """
     def __init__(self):
         self.reload()
+
+    def flatten(self):
+        """
+        Return a flattened dict for the config values. Any nested dictionaries
+        will be pulled to the top dictionary and have its key delimited by '.'.
+        """
+        return flatten_dict(self.__dict__)
 
     def ask_for(self, key, message, field=None):
         """
