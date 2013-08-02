@@ -64,9 +64,9 @@ ConfigPath = lambda: _ConfigPath['path']
 ConfigInfo = {}
 
 
-def add_config_info(key, message, default, post=lambda a: a):
+def add_config_info(key, message, default=None, post=lambda a: a):
     """Add the given key to ConfigInfo for retrieval on request."""
-    ConfigInfo[key] = (message, default post)
+    ConfigInfo[key] = (message, '' if default is None else default, post)
 
 
 class ConfigDict(dict):
