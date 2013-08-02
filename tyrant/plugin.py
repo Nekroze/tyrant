@@ -10,20 +10,20 @@ import os
 from glob import glob
 
 
-def get_plugins(self, command=''):
+def get_plugins(command=''):
     """Return a dictionary of command plugins and their corrosponding paths."""
     paths = ["~/.tyrant/"]
     if ConfigPath:
         configdir = os.path.dirname(ConfigPath)
         paths.append(os.path.join(configdir, "tyrant"))
 
-    tyrants = {}
+    plugins = {}
     for path in paths:
         if not os.path.exists(path):
             continue
-        for filename in glob(os.path.join(path, '{0}*.typ'.format(pattern))):
-            plugins[os.path.split(path)[1][:-4]] = path
-    return tyrants
+        for filename in glob(os.path.join(path, '{0}*.typ'.format(command))):
+            plugins[os.path.split(filename)[1][:-4]] = filename
+    return plugins
 
 
 CommandMap = {"shell": ShellCommand, "file": FileCommand}
