@@ -22,6 +22,19 @@ from six.moves import input
 #pylint: enable=F0401
 
 
+def flatten_dict(data):
+    """Flatten the given dictionary."""
+    def items():
+        """Flatten the dict recursively."""
+        for key, value in data.items():
+            if isinstance(value, dict):
+                for subkey, subvalue in flatten_dict(value).items():
+                    yield "{0}.{1}".format(key, subkey), subvalue
+            else:
+                yield key, value
+    return dict(items())
+
+
 def backsearch(path=None, filename="polis.yml"):
     """
     Search from the given path backwards to find the first occurance of
@@ -47,7 +60,7 @@ def backsearch(path=None, filename="polis.yml"):
 
 
 _ConfigPath = {'path': backsearch()}
-ConfigPath = lambda : _ConfigPath['path']
+ConfigPath = lambda: _ConfigPath['path']
 ConfigInfo = {}
 
 
@@ -57,7 +70,7 @@ class ConfigDict(dict):
         return self[key]
 
     def __setattr__(self, key, value):
-        return self[key] = value
+        self[key] = value
 
 
 class ConfigAccessor(object):
@@ -72,6 +85,10 @@ class ConfigAccessor(object):
     def __init__(self):
         self.__dict__ = ConfigDict()
         self.reload()
+
+    def flatten(self):
+        """Flatten the config structure to a single dictionary."""
+        return flatten_dict(self.__dict__)
 
     def get(self, key):
         """
@@ -107,7 +124,7 @@ class ConfigAccessor(object):
             return output
 
         output = input(message + "\n|>")
-        return self.set_data(key, output, field)
+        return self.set_data(key, output)
 
     def reload(self):
         """
