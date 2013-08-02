@@ -11,7 +11,7 @@ SetupBase = """#!/usr/bin/env python
 import os
 import sys
 
-import {project.source}
+import {{project.source}}
 
 try:
     from setuptools import setup
@@ -23,23 +23,21 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 setup(
-    name='{project.name}',
-    version={project.source}.__version__,
-    description='{project.description}',
+    name='{{project.name}}',
+    version={{project.source}}.__version__,
+    description='{{project.description}}',
     long_description=open('README.rst').read()
-    author='{developers.lead}',
-    author_email='{developers.email}',
-    url='{project.url}',
-    packages=[
-        '{project.source}',
-    ],
-    package_dir={'{project.source}': '{project.source}'},
+    author='{{developers.lead}}',
+    author_email='{{developers.email}}',
+    url='{{project.url}}',
+    packages=['{{project.source}}'],
+    package_dir={'{{project.source}}': '{{project.source}}'},
     include_package_data=True,
     install_requires=[
     ],
-    license="{project.license}",
+    license="{{project.license}}",
     zip_safe=False,
-    keywords='{project.name}',
+    keywords='{{project.name}}',
     classifiers=[
         'Development Status :: 2 - Pre-Alpha',
         'Natural Language :: English',
@@ -62,10 +60,8 @@ class PythonInitCommand(Command):
 
         setupdir = os.path.dirname(ConfigPath())
         setupname = os.path.join(setupdir, "setup.py")
-        flat = Config.flatten()
-        print(flat)
         with open(setupname, 'w') as setup:
-            setup.write(SetupBase.format(**flat))
+            setup.write(Config.format(SetupBase))
 
         print("Python setup.py created")
 
