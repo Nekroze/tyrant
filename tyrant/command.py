@@ -98,3 +98,19 @@ class Command(ArgumentParser):
         """
         self.print_help()
 #pylint: disable=W0613
+
+
+class ShellCommand(Command):
+    """
+    A command that executes one or many shell commands, typically loaded from a
+    ``.typ`` plugin file.
+    """
+    pass
+
+
+class FileCommand(Command):
+    """
+    A command that creates one or many formatted files on command, typically
+    loaded from a ``.typ`` plugin file.
+    """
+    pass
