@@ -201,6 +201,10 @@ class ConfigAccessor(object):
         data[fields[-1]] = value
         return value
 
+    def format(self, textblock):
+        """Format the given textblock with info from the loaded config."""
+        pass
+
 
 Config = ConfigAccessor()
 atexit.register(Config.save)
