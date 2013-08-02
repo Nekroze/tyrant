@@ -22,20 +22,6 @@ from six.moves import input
 #pylint: enable=F0401
 
 
-def flatten_dict(data):
-    """Flatten a given dictionary."""
-    def items():
-        """Pull the items from a dict."""
-        for key, value in data.items():
-            if isinstance(value, dict):
-                for subkey, subvalue in flatten_dict(value).items():
-                    yield key + "." + subkey, subvalue
-            else:
-                yield key, value
-
-    return dict(items())
-
-
 def backsearch(path=None, filename="polis.yml"):
     """
     Search from the given path backwards to find the first occurance of
@@ -61,7 +47,17 @@ def backsearch(path=None, filename="polis.yml"):
 
 
 _ConfigPath = {'path': backsearch()}
-ConfigPath = lambda: _ConfigPath['path']
+ConfigPath = lambda : _ConfigPath['path']
+ConfigInfo = {}
+
+
+class ConfigDict(dict):
+    """A dictionary with attribute getters and setters."""
+    def __getattr__(self, key):
+        return self[key]
+
+    def __setattr__(self, key, value):
+        return self[key] = value
 
 
 class ConfigAccessor(object):
@@ -74,16 +70,26 @@ class ConfigAccessor(object):
     these attributes or other nested data/dicts themselves.
     """
     def __init__(self):
+        self.__dict__ = ConfigDict()
         self.reload()
 
-    def flatten(self):
+    def get(self, key):
         """
-        Return a flattened dict for the config values. Any nested dictionaries
-        will be pulled to the top dictionary and have its key delimited by '.'.
-        """
-        return flatten_dict(self.__dict__)
+        Return the given key if it exists otherwise use the ``ConfigInfo`` to
+        find out how to ask for the info.
 
-    def ask_for(self, key, message):
+        ``key`` may be a '.' delmited string for recursion.
+        """
+        output = self.get_data(key)
+        if output is not None:
+            return output
+
+        message, default, post = ConfigInfo[key]
+        output = input("{0}\n[{1}]|>".format(message, default))
+        output = post(output) if output else default
+        return self.set_data(key, output)
+
+    def ask_for(self, key, message=None):
         """
         Return key if it exists and return it otherwise ask the user for input
         with the given message.
@@ -93,12 +99,15 @@ class ConfigAccessor(object):
 
         ``message`` will be printed before asking for input on the next line.
         """
+        if message is None:
+            return self.get(key)
+
         output = self.get_data(key)
         if output is not None:
             return output
-        else:
-            output = input(message + "\n|>")
-            return self.set_data(key, output)
+
+        output = input(message + "\n|>")
+        return self.set_data(key, output, field)
 
     def reload(self):
         """
@@ -146,26 +155,28 @@ class ConfigAccessor(object):
                 return default
         return data
 
-    def set_data(self, field, value):
+    def set_data(self, key, value):
         """
         Set the given field to the specified key value pair.
 
-        The field argument can be a '.' delimited string of namespaces as such
+        The key argument can be a '.' delimited string of namespaces as such
         or a list of namespaces. Each will be looked for, and if needed
-        entered, until the end of the list at which point it will either set
+        entered, until the end of the list at which point it will set
         the value at the final field.
 
         Any missing fields will be created automatically.
         """
-        if isinstance(field, str):
-            field = field.split('.')
+        if key is None or key == '':
+            fields = []
+        elif not isinstance(key, (list, set, tuple)):
+            fields = fields.split('.')
 
         data = self.__dict__
-        for slot in field[:-1]:
+        for slot in fields[:-1]:
             if slot not in data:
-                data[slot] = {}
+                data[slot] = ConfigDict()
             data = data[slot]
-        data[field[-1]] = value
+        data[fields[-1]] = value
         return value
 
 
