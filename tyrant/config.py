@@ -64,6 +64,11 @@ ConfigPath = lambda: _ConfigPath['path']
 ConfigInfo = {}
 
 
+def add_config_info(key, message, default, post=lambda a: a):
+    """Add the given key to ConfigInfo for retrieval on request."""
+    ConfigInfo[key] = (message, default post)
+
+
 class ConfigDict(dict):
     """A dictionary with attribute getters and setters."""
     def __getattr__(self, key):

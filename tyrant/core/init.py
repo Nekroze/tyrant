@@ -4,8 +4,18 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 from tyrant.command import Command
 from tyrant.tyrant import register_subcommand
-from tyrant.config import Config, set_config
+from tyrant.config import Config, set_config, add_config_info
 import os
+
+
+add_config_info("project.name", "Project name")
+add_config_info("project.description", "Project description")
+add_config_info("project.url", "Project website")
+add_config_info("project.source", "Project source directory")
+add_config_info("project.license", "Project license")
+add_config_info('developers.authors', "Author name(s)")
+add_config_info("developers.lead", "Lead developer")
+add_config_info("developers.email", "Contact email address")
 
 
 class InitCommand(Command):
@@ -36,27 +46,26 @@ class InitCommand(Command):
         print("Creating a new polis.yml config file.")
         set_config()
 
-        def ask_for(field, description, value=None):
-            """Ask for or use the given data."""
+        def ask_for(field, value=None):
+            """Use the given value if defined otherwise ask."""
             if value:
-                Config.set_data(field, description)
+                Config.set_data(field, value)
             else:
-                Config.ask_for(field, description)
+                Config.get(field)
 
-        ask_for("project.name", "Project name", args.project)
-        ask_for("project.description", "Project description", args.description)
-        ask_for("project.url", "Project website", args.url)
-        ask_for("project.source", "Project source directory", args.source)
-        ask_for('developers.authors', "Author name(s)", args.authors)
-        ask_for("developers.email", "Contact email address", args.email)
-        ask_for("project.license", "Project license", args.license)
+        ask_for("project.name", args.project)
+        ask_for("project.description", args.description)
+        ask_for("project.url", args.url)
+        ask_for("project.source", args.source)
+        ask_for("project.license", args.license)
+        ask_for('developers.authors', args.authors)
+        ask_for("developers.email", args.email)
 
         authors = Config.get_data("developers.authors")
         if isinstance(authors, str):
-            authors = [auth.strip() for auth in
-                       authors.split(',')]
-            Config.set_data("developers.authors", authors)
-        Config.set_data("developers.lead", authors[0])
+            Config.set_data("developers.authors",
+                            [auth.strip() for auth in authors.split(',')])
+        ask_for("developers.lead", authors[0])
 
         print("Tyrant project initialized.")
 
