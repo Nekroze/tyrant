@@ -25,6 +25,9 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter as Formatter
+from subprocess import check_call
+import os
+from .tyrant import Tyrant
 
 
 class Command(ArgumentParser):
@@ -105,7 +108,22 @@ class ShellCommand(Command):
     A command that executes one or many shell commands, typically loaded from a
     ``.typ`` plugin file.
     """
-    pass
+    def __init__(self, name, description, path, commands, pre=None, post=None):
+        super(ShellCommand, self).__init__(name, description, path)
+        self.commands = commands
+        self.pre = pre if pre else []
+        self.post = post if post else []
+
+    def execute(self, _):
+        """Execute all shell commands after formatting them with the config."""
+        for command in pre:
+            Tyrant(command.split())
+
+        for command in self.commands:
+            check_call(Config.format(command))
+
+        for command in post:
+            Tyrant(command.split())
 
 
 class FileCommand(Command):
@@ -113,4 +131,27 @@ class FileCommand(Command):
     A command that creates one or many formatted files on command, typically
     loaded from a ``.typ`` plugin file.
     """
-    pass
+    def __init__(self, name, description, path, files, pre=None, post=None):
+        super(FileCommand, self).__init__(name, description, path)
+        self.files = files
+        self.pre = pre if pre else []
+        self.pre.insert(0, "init")
+        self.post = post if post else []
+
+    def execute(self, _):
+        """Write all files to disk after formatting with config."""
+        for command in pre:
+            Tyrant(command.split())
+
+        for filename, content in self.files:
+            path = os.path.join(ConfigPath, filename)
+            dirname = os.path.dirname(path)
+
+            if not os.path.exists(dirname):
+                os.makedirs(dirname)
+
+            with open(path, 'w') as output:
+                output.write(Config.format(content))
+
+        for command in post:
+            Tyrant(command.split())
