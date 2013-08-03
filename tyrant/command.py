@@ -118,6 +118,7 @@ class ShellCommand(Command):
 
     def execute(self, _):
         """Execute all shell commands after formatting them with the config."""
+        from .tyrant import Tyrant
         for command in self.pre:
             Tyrant(command.split())
 
@@ -145,6 +146,7 @@ class FileCommand(Command):
 
     def execute(self, _):
         """Write all files to disk after formatting with config."""
+        from .tyrant import Tyrant
         for command in self.pre:
             Tyrant(command.split())
 
