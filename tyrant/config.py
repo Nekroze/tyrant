@@ -124,6 +124,32 @@ class ConfigAccessor(ConfigDict):
             with open(ConfigPath(), 'w') as configfile:
                 yaml.dump(self.__dict__, configfile, default_flow_style=False)
 
+    def get(self, path):
+        """
+        Recursively get the value of path delimited by '.' in a string.
+        """
+        keys = path.split('.')
+        if not keys:
+            return None
+
+        data = self
+        for key in keys:
+            data = self[key]
+        return data
+
+    def set(self, path, value):
+        """
+        Recursively set the value of path delimited by '.' in a string.
+        """
+        keys = path.split('.')
+        if not keys:
+            return None
+
+        data = self
+        for key in keys[:-1]:
+            data = self[key]
+        data[-1] = value
+
 
 Config = ConfigAccessor()
 atexit.register(Config.save)

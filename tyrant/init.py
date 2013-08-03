@@ -61,10 +61,10 @@ class InitCommand(Command):
         ask_for('developers.authors', args.authors)
         ask_for("developers.email", args.email)
 
-        authors = Config.get_data("developers.authors")
+        authors = Config.get("developers.authors")
         if isinstance(authors, str):
-            Config.set_data("developers.authors",
-                            [auth.strip() for auth in authors.split(',')])
+            Config.set("developers.authors",
+                       [auth.strip() for auth in authors.split(',')])
         ask_for("developers.lead", authors[0])
 
         print("Tyrant project initialized.")
