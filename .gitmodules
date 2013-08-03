@@ -1,0 +1,3 @@
+[submodule ".tyrant"]
+	path = .tyrant
+	url = git@github.com:Nekroze/tyrant-core.git
