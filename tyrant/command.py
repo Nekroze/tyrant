@@ -149,7 +149,7 @@ class FileCommand(Command):
             dirname = os.path.dirname(path)
 
             if not os.path.exists(dirname):
-                os.makedirs(dirname)
+                os.makedirs(dirname, exist_ok=True)
 
             with open(path, 'w') as output:
                 output.write(Config.format(content))
