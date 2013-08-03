@@ -32,7 +32,8 @@ CommandMap = {"shell": ShellCommand, "file": FileCommand}
 def load_plugin(command, path):
     """Load the given command plugin from the path."""
     pdict = yaml.safe_load(path)
-    register_subcommand(command, CommandMap[pdict["type"]](pdict))
+    commandclass = CommandMap[pdict["type"]]
+    register_subcommand(command, commandclass(path=command, **pdict))
 
 
 def load_all_plugins():

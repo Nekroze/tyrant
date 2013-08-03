@@ -9,6 +9,7 @@ __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
 from .command import Command
 from .config import Config
+from .plugin import load_all_plugins
 from importlib import import_module
 import sys
 
@@ -48,14 +49,7 @@ def register_subcommand(path, command):
     current += command
 
 
-def load_plugins():
-    """Load any plugins listed in ``Config``."""
-    plugins = Config.get_data("plugins", [])
-    for name in plugins:
-        import_module(name)
-
-
-Prerun = [load_plugins]
+Prerun = [load_all_plugins]
 
 
 def main():
