@@ -32,7 +32,7 @@ CommandMap = {"shell": ShellCommand, "file": FileCommand}
 def load_plugin(command, path):
     """Load the given command plugin from the path."""
     pdict = yaml.safe_load(path)
-    
+
     if "descriptors" in pdict:
         descriptors = pdict["descriptors"]
         if isinstance(descriptors, (list, set, tuple)):

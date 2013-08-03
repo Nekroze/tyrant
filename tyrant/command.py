@@ -26,6 +26,7 @@ __email__ = 'nekroze@eturnilnetwork.com'
 from argparse import ArgumentParser
 from argparse import RawDescriptionHelpFormatter as Formatter
 from subprocess import check_call
+from jinja2 import Template
 import os
 from .tyrant import Tyrant
 from .config import Config, ConfigPath
@@ -136,7 +137,9 @@ class FileCommand(Command):
     def __init__(self, name, description, path, files, pre=None, post=None,
                  **kwargs):
         super(FileCommand, self).__init__(name, description, path)
-        self.files = files
+        self.files = {}
+        for path, text in files.items():
+            self.files[path] = Template(text)
         self.pre = pre if pre else []
         self.pre.insert(0, "init")
         self.post = post if post else []
@@ -146,15 +149,15 @@ class FileCommand(Command):
         for command in self.pre:
             Tyrant(command.split())
 
-        for filename, content in self.files:
-            path = os.path.join(ConfigPath, filename)
-            dirname = os.path.dirname(path)
+        for filename, template in self.files:
+            dirname = os.path.dirname(ConfigPath)
+            path = os.path.join(dirname, filename)
 
             if not os.path.exists(dirname):
                 os.makedirs(dirname)
 
             with open(path, 'w') as output:
-                output.write(Config.format(content))
+                output.write(template.render(Config))
 
         for command in self.post:
             Tyrant(command.split())
