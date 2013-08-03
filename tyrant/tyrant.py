@@ -113,4 +113,4 @@ def main():
     Tyrant(args[1:])
 
 
-from . import core
+from . import init

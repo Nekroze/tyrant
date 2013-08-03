@@ -2,20 +2,20 @@
 from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
-from tyrant.command import Command
-from tyrant.tyrant import register_subcommand
-from tyrant.config import Config, set_config, add_config_info
+from .command import Command
+from .tyrant import register_subcommand
+from .config import Config, set_config
 import os
 
 
-add_config_info("project.name", "Project name")
-add_config_info("project.description", "Project description")
-add_config_info("project.url", "Project website")
-add_config_info("project.source", "Project source directory")
-add_config_info("project.license", "Project license")
-add_config_info('developers.authors', "Author name(s)")
-add_config_info("developers.lead", "Lead developer")
-add_config_info("developers.email", "Contact email address")
+Config.add_descriptor("project.name", "Project name")
+Config.add_descriptor("project.description", "Project description")
+Config.add_descriptor("project.url", "Project website")
+Config.add_descriptor("project.source", "Project source directory")
+Config.add_descriptor("project.license", "Project license")
+Config.add_descriptor('developers.authors', "Author name(s)")
+Config.add_descriptor("developers.lead", "Lead developer")
+Config.add_descriptor("developers.email", "Contact email address")
 
 
 class InitCommand(Command):
@@ -49,7 +49,7 @@ class InitCommand(Command):
         def ask_for(field, value=None):
             """Use the given value if defined otherwise ask."""
             if value:
-                Config.set_data(field, value)
+                Config.set(field, value)
             else:
                 Config.get(field)
 
