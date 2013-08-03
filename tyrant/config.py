@@ -79,9 +79,9 @@ class ConfigDict(dict):
         if '.' in key:
             fields = key.split('.')
             key = fields[0]
-            if key in self:
+            if key not in self:
                 self[key] = ConfigDict()
-            self[key].add_descriptor(fields[1:], message, default)
+            self[key].add_descriptor('.'.join(fields[1:]), message, default)
         else:
             self.descriptors[key] = (message, default if default else '')
 
