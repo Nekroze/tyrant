@@ -28,6 +28,7 @@ from argparse import RawDescriptionHelpFormatter as Formatter
 from subprocess import check_call
 import os
 from .tyrant import Tyrant
+from .config import Config, ConfigPath
 
 
 class Command(ArgumentParser):
@@ -116,13 +117,13 @@ class ShellCommand(Command):
 
     def execute(self, _):
         """Execute all shell commands after formatting them with the config."""
-        for command in pre:
+        for command in self.pre:
             Tyrant(command.split())
 
         for command in self.commands:
             check_call(Config.format(command))
 
-        for command in post:
+        for command in self.post:
             Tyrant(command.split())
 
 
@@ -140,7 +141,7 @@ class FileCommand(Command):
 
     def execute(self, _):
         """Write all files to disk after formatting with config."""
-        for command in pre:
+        for command in self.pre:
             Tyrant(command.split())
 
         for filename, content in self.files:
@@ -153,5 +154,5 @@ class FileCommand(Command):
             with open(path, 'w') as output:
                 output.write(Config.format(content))
 
-        for command in post:
+        for command in self.post:
             Tyrant(command.split())
