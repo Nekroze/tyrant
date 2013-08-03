@@ -149,7 +149,7 @@ class FileCommand(Command):
             Tyrant(command.split())
 
         for filename, template in self.files:
-            dirname = os.path.dirname(ConfigPath)
+            dirname = os.path.dirname(ConfigPath())
             path = os.path.join(dirname, filename)
 
             if not os.path.exists(dirname):

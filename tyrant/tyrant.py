@@ -53,9 +53,9 @@ def register_subcommand(path, command):
 
 def get_plugins(command=''):
     """Return a dictionary of command plugins and their corrosponding paths."""
-    paths = [os.path.expandusr('~/.tyrant')]
-    if ConfigPath:
-        configdir = os.path.dirname(ConfigPath)
+    paths = [os.path.expanduser('~/.tyrant')]
+    if ConfigPath():
+        configdir = os.path.dirname(ConfigPath())
         paths.append(os.path.join(configdir, "tyrant"))
 
     plugins = {}
@@ -90,7 +90,7 @@ def load_all_plugins():
     """Load all plugins that ``get_plugins`` can find."""
     for command, path in get_plugins().items():
         load_plugin(command, path)
-    
+
 
 Prerun = [load_all_plugins]
 
