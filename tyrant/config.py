@@ -14,6 +14,7 @@ at which time it will be re-serialized and saved to disk.
 from __future__ import print_function
 __author__ = 'Taylor "Nekroze" Lawson'
 __email__ = 'nekroze@eturnilnetwork.com'
+import re
 import atexit
 import yaml
 import os
@@ -201,9 +202,9 @@ class ConfigAccessor(object):
         data[fields[-1]] = value
         return value
 
-    def format(self, textblock):
+    def format(self, template):
         """Format the given textblock with info from the loaded config."""
-        pass
+        return template.render(**self.__dict__)
 
 
 Config = ConfigAccessor()
