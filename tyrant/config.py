@@ -23,19 +23,6 @@ from six.moves import input
 #pylint: enable=F0401
 
 
-def flatten_dict(data):
-    """Flatten the given dictionary."""
-    def items():
-        """Flatten the dict recursively."""
-        for key, value in data.items():
-            if isinstance(value, dict):
-                for subkey, subvalue in flatten_dict(value).items():
-                    yield "{0}.{1}".format(key, subkey), subvalue
-            else:
-                yield key, value
-    return dict(items())
-
-
 def backsearch(path=None, filename="polis.yml"):
     """
     Search from the given path backwards to find the first occurance of
@@ -62,24 +49,44 @@ def backsearch(path=None, filename="polis.yml"):
 
 _ConfigPath = {'path': backsearch()}
 ConfigPath = lambda: _ConfigPath['path']
-ConfigInfo = {}
-
-
-def add_config_info(key, message, default=None, post=lambda a: a):
-    """Add the given key to ConfigInfo for retrieval on request."""
-    ConfigInfo[key] = (message, '' if default is None else default, post)
 
 
 class ConfigDict(dict):
-    """A dictionary with attribute getters and setters."""
+    """
+    A dictionary with attribute getters and setters that supports config
+    descriptors that can describe how to ask for missing information.
+    """
+    def __init__(self):
+        super(ConfigDict, self).__init__()
+        self.descriptors = {}
+
     def __getattr__(self, key):
+        if key not in self and key in self.descriptors:
+            message, default = self.descriptors[key]
+            output = input("{0}\n[{1}]|>".format(message, default))
+            output = output if output else default
+            self[key] = output
         return self[key]
 
     def __setattr__(self, key, value):
         self[key] = value
 
+    def add_descriptor(self, key, message, default=None):
+        """
+        Add an info descriptor that informs the Config how to get missing
+        information.
+        """
+        if '.' in key:
+            fields = key.split('.')
+            key = fields[0]
+            if key in self:
+                self[key] = ConfigDict()
+            self[key].add_descriptor(fields[1:], message, default)
+        else:
+            self.descriptors[key] = (message, default if default else '')
 
-class ConfigAccessor(object):
+
+class ConfigAccessor(ConfigDict):
     """
     Allows access to the configuration file if one is found.
 
@@ -89,48 +96,8 @@ class ConfigAccessor(object):
     these attributes or other nested data/dicts themselves.
     """
     def __init__(self):
-        self.__dict__ = ConfigDict()
+        super(ConfigAccessor, self).__init__()
         self.reload()
-
-    def flatten(self):
-        """Flatten the config structure to a single dictionary."""
-        return flatten_dict(self.__dict__)
-
-    def get(self, key):
-        """
-        Return the given key if it exists otherwise use the ``ConfigInfo`` to
-        find out how to ask for the info.
-
-        ``key`` may be a '.' delmited string for recursion.
-        """
-        output = self.get_data(key)
-        if output is not None:
-            return output
-
-        message, default, post = ConfigInfo[key]
-        output = input("{0}\n[{1}]|>".format(message, default))
-        output = post(output) if output else default
-        return self.set_data(key, output)
-
-    def ask_for(self, key, message=None):
-        """
-        Return key if it exists and return it otherwise ask the user for input
-        with the given message.
-
-        The ``key`` argument is used to get and if required set the data from
-        the ``get_data`` and ``set_data`` methods respectively.
-
-        ``message`` will be printed before asking for input on the next line.
-        """
-        if message is None:
-            return self.get(key)
-
-        output = self.get_data(key)
-        if output is not None:
-            return output
-
-        output = input(message + "\n|>")
-        return self.set_data(key, output)
 
     def reload(self):
         """
@@ -156,55 +123,6 @@ class ConfigAccessor(object):
         if ConfigPath():
             with open(ConfigPath(), 'w') as configfile:
                 yaml.dump(self.__dict__, configfile, default_flow_style=False)
-
-    def get_data(self, field, default=None):
-        """
-        Retreive nested data or return default if it does not exist.
-
-        The field argument can be a '.' delimited string of namespaces as such
-        or a list of namespaces. Each will be looked for, and if needed
-        entered, until the end of the list or a namespace is missing at which
-        point it will either return the datapoint that has been reached or the
-        default argument. Respectively.
-        """
-        if not isinstance(field, (list, set, tuple)):
-            field = field.split('.')
-
-        data = self.__dict__
-        for slot in field:
-            if slot in data:
-                data = data[slot]
-            else:
-                return default
-        return data
-
-    def set_data(self, key, value):
-        """
-        Set the given field to the specified key value pair.
-
-        The key argument can be a '.' delimited string of namespaces as such
-        or a list of namespaces. Each will be looked for, and if needed
-        entered, until the end of the list at which point it will set
-        the value at the final field.
-
-        Any missing fields will be created automatically.
-        """
-        if key is None or key == '':
-            fields = []
-        elif not isinstance(key, (list, set, tuple)):
-            fields = fields.split('.')
-
-        data = self.__dict__
-        for slot in fields[:-1]:
-            if slot not in data:
-                data[slot] = ConfigDict()
-            data = data[slot]
-        data[fields[-1]] = value
-        return value
-
-    def format(self, template):
-        """Format the given textblock with info from the loaded config."""
-        return template.render(**self.__dict__)
 
 
 Config = ConfigAccessor()
