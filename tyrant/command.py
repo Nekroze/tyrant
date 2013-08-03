@@ -109,7 +109,8 @@ class ShellCommand(Command):
     A command that executes one or many shell commands, typically loaded from a
     ``.typ`` plugin file.
     """
-    def __init__(self, name, description, path, commands, pre=None, post=None):
+    def __init__(self, name, description, path, commands, pre=None, post=None,
+                 **kwargs):
         super(ShellCommand, self).__init__(name, description, path)
         self.commands = commands
         self.pre = pre if pre else []
@@ -132,7 +133,8 @@ class FileCommand(Command):
     A command that creates one or many formatted files on command, typically
     loaded from a ``.typ`` plugin file.
     """
-    def __init__(self, name, description, path, files, pre=None, post=None):
+    def __init__(self, name, description, path, files, pre=None, post=None,
+                 **kwargs):
         super(FileCommand, self).__init__(name, description, path)
         self.files = files
         self.pre = pre if pre else []
