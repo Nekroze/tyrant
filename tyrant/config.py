@@ -60,16 +60,13 @@ class ConfigDict(dict):
         super(ConfigDict, self).__init__()
         self.descriptors = {}
 
-    def __getattr__(self, key):
+    def __getitem__(self, key):
         if key not in self and key in self.descriptors:
             message, default = self.descriptors[key]
             output = input("{0}\n[{1}]|>".format(message, default))
             output = output if output else default
             self[key] = output
-        return self[key]
-
-    def __setattr__(self, key, value):
-        self[key] = value
+        return super(ConfigDict, self).__getitem__(key)
 
     def add_descriptor(self, key, message, default=None):
         """
