@@ -12,7 +12,7 @@ from glob import glob
 
 def get_plugins(command=''):
     """Return a dictionary of command plugins and their corrosponding paths."""
-    paths = ["~/.tyrant/"]
+    paths = [os.path.expandusr('~/.tyrant')]
     if ConfigPath:
         configdir = os.path.dirname(ConfigPath)
         paths.append(os.path.join(configdir, "tyrant"))
