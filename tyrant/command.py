@@ -28,7 +28,6 @@ from argparse import RawDescriptionHelpFormatter as Formatter
 from subprocess import check_call
 from jinja2 import Template
 import os
-from .tyrant import Tyrant
 from .config import Config, ConfigPath
 
 
