@@ -52,11 +52,21 @@ def register_subcommand(path, command):
 
 
 def get_plugins(command=''):
-    """Return a dictionary of command plugins and their corrosponding paths."""
+    """
+    Return a dictionary of command plugins and their corrosponding paths.
+
+    This will first look in the user home directory, then the current tyrant
+    project directory (containing 'polis.yml') and finally in the current
+    directory for a '.tyrant' folder containing ``'*.typ'`` files.
+    """
     paths = [os.path.expanduser('~/.tyrant')]
     if ConfigPath():
         configdir = os.path.dirname(ConfigPath())
         paths.append(os.path.join(configdir, "tyrant"))
+
+    current = os.path.join(os.getcwd(), ".tyrant")
+    if os.path.exists(current):
+        paths.append(current)
 
     plugins = {}
     for path in paths:
