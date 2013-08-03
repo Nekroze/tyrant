@@ -112,7 +112,9 @@ class ShellCommand(Command):
     def __init__(self, name, description, path, commands, pre=None, post=None,
                  **kwargs):
         super(ShellCommand, self).__init__(name, description, path)
-        self.commands = commands
+        self.commands = []
+        for text in commands:
+            self.commands.append(Template(text))
         self.pre = pre if pre else []
         self.post = post if post else []
 
@@ -122,8 +124,8 @@ class ShellCommand(Command):
         for command in self.pre:
             Tyrant(command.split())
 
-        for command in self.commands:
-            check_call(Config.format(command))
+        for template in self.commands:
+            check_call(template.render(Config))
 
         for command in self.post:
             Tyrant(command.split())
