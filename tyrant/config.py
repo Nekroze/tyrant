@@ -51,22 +51,35 @@ _ConfigPath = {'path': backsearch()}
 ConfigPath = lambda: _ConfigPath['path']
 
 
-class ConfigDict(dict):
+class ConfigDict(object):
     """
     A dictionary with attribute getters and setters that supports config
     descriptors that can describe how to ask for missing information.
     """
     def __init__(self):
-        super(ConfigDict, self).__init__()
+        self.data = {}
         self.descriptors = {}
 
     def __getitem__(self, key):
-        if key not in self and key in self.descriptors:
+        if key not in self.data and key in self.descriptors:
             message, default = self.descriptors[key]
             output = input("{0}\n[{1}]|>".format(message, default))
             output = output if output else default
-            self[key] = output
-        return super(ConfigDict, self).__getitem__(key)
+            self.data[key] = output
+        return self.data[key]
+
+    def __setitem__(self, key, value):
+        self.data[key] = value
+
+    def get_data(self, key):
+        """Get the stored data as a dictionary excluding descriptors."""
+        data = {}
+        for key, value in data.items():
+            if isinstance(value, ConfigDict):
+                data[key] = value.data()
+            else:
+                data[key] = value
+        return data
 
     def add_descriptor(self, key, message, default=None):
         """
@@ -76,9 +89,9 @@ class ConfigDict(dict):
         if '.' in key:
             fields = key.split('.')
             key = fields[0]
-            if key not in self:
-                self[key] = ConfigDict()
-            self[key].add_descriptor('.'.join(fields[1:]), message, default)
+            if key not in self.data:
+                self.data[key] = ConfigDict()
+            self.data[key].add_descriptor('.'.join(fields[1:]), message, default)
         else:
             self.descriptors[key] = (message, default if default else '')
 
@@ -108,7 +121,7 @@ class ConfigAccessor(ConfigDict):
         self.__dict__.clear()
         if ConfigPath() and os.path.exists(ConfigPath()):
             with open(ConfigPath()) as configfile:
-                self.__dict__.update(yaml.safe_load(configfile))
+                self.data.update(yaml.safe_load(configfile))
 
     def save(self):
         """
@@ -119,7 +132,7 @@ class ConfigAccessor(ConfigDict):
         """
         if ConfigPath():
             with open(ConfigPath(), 'w') as configfile:
-                yaml.dump(self.__dict__, configfile, default_flow_style=False)
+                yaml.dump(self.get_data(), configfile, default_flow_style=False)
 
     def get(self, path):
         """
