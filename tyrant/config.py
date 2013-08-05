@@ -91,7 +91,8 @@ class ConfigDict(object):
             key = fields[0]
             if key not in self.data:
                 self.data[key] = ConfigDict()
-            self.data[key].add_descriptor('.'.join(fields[1:]), message, default)
+            self.data[key].add_descriptor('.'.join(fields[1:]), message,
+                                          default)
         else:
             self.descriptors[key] = (message, default if default else '')
 
@@ -132,7 +133,8 @@ class ConfigAccessor(ConfigDict):
         """
         if ConfigPath():
             with open(ConfigPath(), 'w') as configfile:
-                yaml.dump(self.get_data(), configfile, default_flow_style=False)
+                yaml.dump(self.get_data(), configfile,
+                          default_flow_style=False)
 
     def get(self, path):
         """
