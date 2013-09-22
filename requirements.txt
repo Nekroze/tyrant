@@ -1,1 +1,1 @@
-nekrobox>=0.3.0
+OBnekrobox>=0.4.0
